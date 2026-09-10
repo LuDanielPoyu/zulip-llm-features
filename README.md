@@ -73,6 +73,7 @@ flowchart LR
     STATE --> LOAD["Loading"]
     STATE --> EMPTY["Empty"]
     STATE --> ERR["Error"]
+```
 
 ---
 
