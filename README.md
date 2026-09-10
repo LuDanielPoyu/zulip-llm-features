@@ -73,3 +73,148 @@ flowchart LR
     STATE --> LOAD["Loading"]
     STATE --> EMPTY["Empty"]
     STATE --> ERR["Error"]
+
+---
+
+### F2 — Topic Title Suggestion
+
+**Problem:**  
+When composing Zulip messages, users must manually create topic titles that clearly represent the conversation. Poor or vague titles can make discussions harder to organize and navigate.
+
+**Solution:**  
+Built an **LLM-assisted topic-title suggestion feature** integrated directly into Zulip's message composition workflow.
+
+**Software/ML-oriented highlights:**
+- **Compose integration:** Added topic-title suggestion functionality to the existing Zulip message-composition interface.
+- **Backend API:** Developed a Django endpoint that accepts message context, prepares the LLM request, and returns a generated topic-title suggestion.
+- **LLM generation:** Used message content as contextual input to generate concise and relevant topic titles.
+- **Frontend workflow:** Integrated the returned suggestion into the **TypeScript compose interface** so users can request and apply a suggested title without leaving the compose workflow.
+- **Request validation:** Handled authentication, input validation, and structured responses between the frontend and backend.
+- **Failure handling:** Designed the feature so API or model failures do not interrupt the normal message-composition workflow.
+- **Testing:** Added backend and frontend automated tests covering the title-suggestion workflow.
+
+**Impact:**
+- Added AI-assisted topic organization directly into an existing communication workflow.
+- Reduced friction between composing a message and selecting an appropriate discussion topic.
+- Demonstrated how generative AI can augment an existing product workflow while keeping the user in control of the final output.
+
+```mermaid
+flowchart LR
+    U["User composes message"]
+    U --> C["Message content"]
+
+    C --> BTN["Request title suggestion"]
+    BTN --> FE["TypeScript frontend"]
+
+    FE --> API["Authenticated Django API"]
+    API --> CTX["Prepare message context"]
+
+    CTX --> LLM["LLM title generation"]
+    LLM --> TITLE["Suggested topic title"]
+
+    TITLE --> API
+    API --> FE
+
+    FE --> DISPLAY["Display suggestion"]
+    DISPLAY --> USER{"User decision"}
+
+    USER -->|Accept| APPLY["Apply suggested title"]
+    USER -->|Edit or Ignore| MANUAL["Continue manual editing"]
+```
+
+---
+
+### F3 — Full-Stack LLM Integration & Testing
+
+**Problem:**  
+Adding LLM functionality to a mature application involves more than invoking a model. The feature must work reliably across existing backend APIs, authentication, frontend state, error handling, and testing infrastructure without disrupting established application behavior.
+
+**Solution:**  
+Integrated both AI-powered features across the **Django backend and TypeScript frontend**, while following the architecture and conventions of the existing Zulip codebase.
+
+**Engineering highlights:**
+- **Existing-codebase development:** Worked within Zulip's large full-stack application rather than building an isolated prototype.
+- **API integration:** Connected TypeScript client interactions with authenticated Django backend endpoints using structured requests and responses.
+- **Separation of concerns:** Kept model invocation, backend application logic, and frontend presentation responsibilities separated.
+- **State management:** Explicitly handled **loading, success, empty, and error states** for asynchronous LLM requests.
+- **Graceful degradation:** Ensured LLM failures did not prevent users from continuing normal Zulip workflows.
+- **Automated testing:** Added backend and frontend tests to validate feature behavior and reduce the risk of regressions.
+- **Incremental development:** Developed and validated changes within an existing Git-based software engineering workflow.
+
+**Impact:**
+- Delivered two end-to-end LLM capabilities inside an established full-stack communication platform.
+- Gained experience integrating AI functionality into an existing software system rather than developing a standalone ML prototype.
+- Strengthened practical experience across **backend engineering, frontend development, API design, testing, and LLM application development**.
+
+```mermaid
+flowchart LR
+    subgraph FRONTEND["Frontend — TypeScript"]
+        INBOX["Inbox UI"]
+        COMPOSE["Compose UI"]
+        STATE["State & Error Handling"]
+    end
+
+    subgraph BACKEND["Backend — Django"]
+        AUTH["Authentication"]
+        API["API Endpoints"]
+        LOGIC["Application Logic"]
+    end
+
+    subgraph AI["LLM Layer"]
+        PROMPT["Context / Prompt Preparation"]
+        MODEL["Language Model"]
+        OUTPUT["Generated Output"]
+    end
+
+    INBOX --> API
+    COMPOSE --> API
+
+    API --> AUTH
+    AUTH --> LOGIC
+
+    LOGIC --> PROMPT
+    PROMPT --> MODEL
+    MODEL --> OUTPUT
+
+    OUTPUT --> LOGIC
+    LOGIC --> API
+
+    API --> INBOX
+    API --> COMPOSE
+
+    INBOX --> STATE
+    COMPOSE --> STATE
+```
+
+---
+
+## Tech Stack
+
+| Area | Technologies |
+|---|---|
+| **Backend** | Python, Django |
+| **Frontend** | TypeScript, Zulip Web UI |
+| **AI / ML** | Large Language Models, Prompt-Based Summarization, Text Generation |
+| **APIs** | Authenticated REST APIs |
+| **Testing** | Backend and Frontend Automated Tests |
+| **Engineering** | Git, Existing-Codebase Integration, Full-Stack Development |
+
+---
+
+## Key Engineering Takeaways
+
+This project strengthened my ability to work at the intersection of **software engineering and machine learning engineering**.
+
+Rather than building an isolated LLM prototype, I integrated model-backed functionality into an established full-stack application. This required understanding an unfamiliar codebase, designing backend interfaces, implementing frontend workflows, handling asynchronous application states, validating behavior through automated testing, and considering how AI-generated outputs should fit naturally into an existing user experience.
+
+The project reinforced an important principle of machine learning in production:
+
+> **A useful AI feature is not only a model call—it is a complete software system around the model.**
+
+---
+
+## Repository Context
+
+This project was completed as part of Carnegie Mellon University's **Machine Learning in Production** course.
+
+The implementation focuses on extending the existing Zulip application with full-stack LLM functionality while preserving the application's established architecture and workflows.
