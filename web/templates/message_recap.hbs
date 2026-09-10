@@ -1,0 +1,31 @@
+{{#if loading}}
+    <div class="message-recap-loading">{{t
+            "Generating a recap of your unread messages…"
+        }}</div>
+{{else if error}}
+    <div class="message-recap-error alert alert-error">{{t
+            "Unable to generate a recap. Please try again."
+        }}</div>
+{{else if empty}}
+    <div class="message-recap-empty">{{t
+            "You have no unread messages to recap."
+        }}</div>
+{{else}}
+    <div class="message-recap-summary rendered_markdown">{{rendered_markdown
+            summary
+        }}</div>
+    {{#if has_references}}
+        <h2 class="message-recap-references-heading">{{t "Sources"}}</h2>
+        <ul class="message-recap-references">
+            {{#each references}}
+                <li>
+                    <a
+                        class="message-recap-reference"
+                        href="{{url}}"
+                        data-message-id="{{message_id}}"
+                    >{{label}}</a>
+                </li>
+            {{/each}}
+        </ul>
+    {{/if}}
+{{/if}}
